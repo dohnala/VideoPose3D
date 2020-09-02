@@ -766,7 +766,9 @@ if args.render:
                     break
             prediction = camera_to_world(prediction, R=rot, t=0)
             # We don't have the trajectory, but at least we can rebase the height
-            prediction[:, :, 2] -= np.min(prediction[:, :, 2])
+            #prediction[:, :, 2] -= np.min(prediction[:, :, 2])
+            # force the height of the lowest joint to 0, so that the subject is always touching the ground
+            prediction[:, :, 2] -= np.min(prediction[:, :, 2], axis=1, keepdims=True)
         
         anim_output = {'Reconstruction': prediction}
         if ground_truth is not None and not args.viz_no_ground_truth:
